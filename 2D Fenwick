@@ -1,0 +1,19 @@
+vector<vector<ll>> fenwick(26,vector<ll>(100010));
+void update(int w,int index, ll value, int n) {
+    while (index <= n) {
+        fenwick[w][index] = (fenwick[w][index] + value);
+        index = index + (index & (-index));
+    }
+}
+ll sum(int w,int index) {
+	if(index<1){
+		return 0;
+	}
+    ll ans = 0;
+    while (index > 0)
+    {
+		ans+=fenwick[w][index];
+        index = index - (index & (-index));
+    }
+    return ans;
+}
