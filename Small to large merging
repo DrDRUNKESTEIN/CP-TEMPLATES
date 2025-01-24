@@ -1,0 +1,19 @@
+vector<int> col(200005);
+vector<int> g[200005];
+set<int> all[200005];
+vector<int> ans(200005);
+void dfs(int start, int par) {
+    for (auto node : g[start]) {
+        if (node == par) {
+            continue;
+        }
+        dfs(node, start);
+        if (all[node].size() > all[start].size()) {
+            swap(all[node], all[start]);
+        }
+        for (auto item : all[node]) {
+            all[start].insert(item);
+        }
+    }
+    ans[start] = all[start].size();
+}
