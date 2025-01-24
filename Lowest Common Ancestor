@@ -1,0 +1,53 @@
+vector<ll> g[200005];
+vector<ll> parent(200005);
+vector<bool> vis(200005);
+vector<ll> depth(200005);
+vector<vector<int>> dp(21, vector<int>(200005));
+void dfs(int start, int par) {
+    vis[start] = 1;
+    parent[start] = par;
+    if (par != -1) {
+        depth[start] = depth[par] + 1;
+    }
+    for (auto node : g[start]) {
+        if (!vis[node]) {
+            dfs(node, start);
+        }
+    }
+}
+void build(int n) {
+    for (int i = 2; i <= n; i++) {
+        dp[0][i] = parent[i];
+    }
+    for (int j = 1; j <= 20; j++) {
+        for (int i = 1; i <= n; i++) {
+            if (dp[j - 1][i]) {
+                int node = dp[j - 1][i];
+                if (depth[node] - (1 << (j - 1)) >= 0) {
+                    dp[j][i] = dp[j - 1][node];
+                }
+            }
+        }
+    }
+}
+int LCA(int p, int q)
+{
+    if (depth[p] < depth[q])
+        swap(p, q);
+ 
+    int diff = depth[p] - depth[q];
+ 
+    for (int i = 20; i >= 0; i--)
+        if (diff & (1 << i))
+            p = dp[i][p];
+ 
+    if (p == q) return p;
+ 
+    for (int i = 20; i >= 0; i--) {
+        if (dp[i][p] != dp[i][q]) {
+            p = dp[i][p];
+            q = dp[i][q];
+        }
+    }
+    return dp[0][p];
+}
